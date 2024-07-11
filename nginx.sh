@@ -1,4 +1,5 @@
 #!/bin/bash
+git -v
 rm -rf /home/container/tmp/*
 PHP_VERSION=$(cat "/home/container/php_version.txt")
 
