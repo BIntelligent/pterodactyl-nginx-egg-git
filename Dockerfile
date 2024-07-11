@@ -1,6 +1,6 @@
 FROM debian:bookworm-slim
 
-LABEL author="Ym0t" maintainer="YmoT@tuta.com"
+LABEL author="bintelligent" maintainer="abdul.rehman.lgs@gmail.com"
 
 ARG PHP_VERSION="8.3"
 
@@ -82,5 +82,4 @@ STOPSIGNAL SIGINT
 
 COPY ./entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-
-CMD /entrypoint.sh
+CMD ["/bin/bash", "/entrypoint.sh"]

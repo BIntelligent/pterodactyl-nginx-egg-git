@@ -91,8 +91,8 @@
             "user_editable": true,
             "rules": "nullable|string|regex:\/^#$\/",
             "field_type": "text"
-        }
-                {
+        },
+        {
             "name": "Git Repo Address",
             "description": "GitHub Repo to clone\r\n\r\nI.E. https:\/\/github.com\/parkervcp\/repo_name",
             "env_variable": "GIT_ADDRESS",
@@ -151,6 +151,6 @@
             "user_editable": true,
             "rules": "nullable|string",
             "field_type": "text"
-        },
+        }
     ]
 }
