@@ -5,28 +5,24 @@
         "update_url": null
     },
     "exported_at": "2024-01-30T23:15:35+01:00",
-    "name": "Nginx",
-    "author": "YmoT@tuta.com",
+    "name": "Nginx with Git",
+    "author": "abdul.rehman.lgs@gmail.com",
     "description": "NGINX is a free, open-source, high-performance HTTP server and reverse proxy, as well as an IMAP\/POP3 proxy server. NGINX is known for its high performance, stability, rich feature set, simple configuration, and low resource consumption.",
     "features": null,
     "docker_images": {
-        "ghcr.io\/ym0t\/nginx_php:8.3": "ghcr.io\/ym0t\/nginx_php:8.3",
-        "ghcr.io\/ym0t\/nginx_php:8.2": "ghcr.io\/ym0t\/nginx_php:8.2",
-        "ghcr.io\/ym0t\/nginx_php:8.1": "ghcr.io\/ym0t\/nginx_php:8.1",
-        "ghcr.io\/ym0t\/nginx_php:8.0": "ghcr.io\/ym0t\/nginx_php:8.0",
-        "ghcr.io\/ym0t\/nginx_php:7.3": "ghcr.io\/ym0t\/nginx_php:7.3"
+        "ghcr.io\/bintelligent\/pterodactyl-nginx-egg-git": "ghcr.io/bintelligent/pterodactyl-nginx-egg-git:latest"
     },
     "file_denylist": [],
     "startup": "{{STARTUP_COMMAND}}",
     "config": {
-        "files": "{\r\n    \"nginx\/conf.d\/default.conf\": {\r\n        \"parser\": \"file\",\r\n        \"find\": {\r\n            \"    listen\": \"    listen {{server.build.default.port}};\",\r\n            \"    #access_log\": \"    {{env.CONSOLE_ACCESS_LOG}}access_log \/home\/container\/naccess.log;\",\r\n            \"    access_log\": \"    {{env.CONSOLE_ACCESS_LOG}}access_log \/home\/container\/naccess.log;\",\r\n            \"    #error_log\": \"    {{env.CONSOLE_ERROR_LOG}}error_log  \/home\/container\/nerror.log error;\",\r\n            \"    error_log\": \"    {{env.CONSOLE_ERROR_LOG}}error_log  \/home\/container\/nerror.log error;\"\r\n        }\r\n    },\r\n    \"php\/php.ini\": {\r\n        \"parser\": \"file\",\r\n        \"find\": {\r\n            \"memory_limit =\": \"memory_limit = {{env.MEMORY_LIMIT}};\"\r\n        }\r\n    }\r\n}",
-        "startup": "{\r\n    \"done\": \"[Docker] Services successfully launched\"\r\n}",
-        "logs": "{\r\n    \"location\": \"logs\/latest.log\"\r\n}",
+        "files": "{\r\n\"nginx\/conf.d\/default.conf\": {\r\n\"parser\": \"file\",\r\n\"find\": {\r\n\"listen\": \"listen {{server.build.default.port}};\",\r\n\"#access_log\": \"{{env.CONSOLE_ACCESS_LOG}}access_log \/home\/container\/naccess.log;\",\r\n\"access_log\": \"{{env.CONSOLE_ACCESS_LOG}}access_log \/home\/container\/naccess.log;\",\r\n\"#error_log\": \"{{env.CONSOLE_ERROR_LOG}}error_log  \/home\/container\/nerror.log error;\",\r\n\"error_log\": \"{{env.CONSOLE_ERROR_LOG}}error_log  \/home\/container\/nerror.log error;\"\r\n}\r\n},\r\n\"php\/php.ini\": {\r\n\"parser\": \"file\",\r\n\"find\": {\r\n\"memory_limit =\": \"memory_limit = {{env.MEMORY_LIMIT}};\"\r\n}\r\n}\r\n}",
+        "startup": "{\r\n\"done\": \"[Docker] Services successfully launched\"\r\n}",
+        "logs": "{\r\n\"location\": \"logs\/latest.log\"\r\n}",
         "stop": "^C & ^C"
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/bash\r\necho -e \"[SETUP] Install packages\"\r\napt-get update -qq > \/dev\/null 2>&1 && apt-get install -qq > \/dev\/null 2>&1 -y git wget\r\ncd \/mnt\/server\r\n\r\necho -e \"[SETUP] Create folders\"\r\nmkdir logs && mkdir tmp && mkdir www\r\n\r\necho -e \"[SETUP] Copy Github files\"\r\ngit clone https:\/\/github.com\/Ym0T\/pterodactyl-nginx-egg.git .\/gtemp > \/dev\/null 2>&1\r\n\r\ncp -r .\/gtemp\/nginx .\r\ncp -r .\/gtemp\/php .\r\ncp .\/gtemp\/nginx.sh . && rm -R .\/gtemp\r\nchmod +x nginx.sh\r\n\r\necho \"${PHP_VERSION}\" > \"php_version.txt\"\r\n\r\nif [ \"${WORDPRESS}\" == \"true\" ] || [ \"${WORDPRESS}\" == \"1\" ]\r\nthen\r\n    echo \"[SETUP] Install Wordpress\"\r\n    cd \/mnt\/server\/www\r\n    wget -q > \/dev\/null 2>&1 http:\/\/wordpress.org\/latest.tar.gz\r\n    tar xzf latest.tar.gz >\/dev\/null 2>&1\r\n    mv wordpress\/* .\r\n    rm -rf wordpress latest.tar.gz\r\n    echo \"[SETUP] Wordpress installed - http:\/\/ip:port\/wp-admin \"\r\n    exit 0\r\nelse\r\n    echo \"<?php phpinfo(); ?>\" > \"www\/index.php\"\r\nfi\r\n\r\necho -e \"[DONE] Everything has been installed\"",
+            "script": "#!\/bin\/bash\r\necho -e \"[SETUP] Install packages\"\r\napt-get update -qq > \/dev\/null 2>&1 && apt-get install -qq > \/dev\/null 2>&1 -y git wget\r\n\r\ncd \/mnt\/server\r\n\r\necho -e \"[SETUP] Create folders\"\r\nmkdir logs && mkdir tmp && mkdir www\r\n\r\necho -e \"[SETUP] Copy Github files\"\r\ngit clone https:\/\/github.com\/Ym0T\/pterodactyl-nginx-egg.git .\/gtemp > \/dev\/null 2>&1\r\n\r\ncp -r .\/gtemp\/nginx .\r\ncp -r .\/gtemp\/php .\r\ncp .\/gtemp\/nginx.sh . && rm -R .\/gtemp\r\nchmod +x nginx.sh\r\n\r\necho \"${PHP_VERSION}\" > \"php_version.txt\"\r\n\r\nif [ \"${WORDPRESS}\" == \"true\" ] || [ \"${WORDPRESS}\" == \"1\" ]\r\nthen\r\necho \"[SETUP] Install Wordpress\"\r\ncd \/mnt\/server\/www\r\nwget -q > \/dev\/null 2>&1 http:\/\/wordpress.org\/latest.tar.gz\r\ntar xzf latest.tar.gz >\/dev\/null 2>&1\r\nmv wordpress\/* .\r\nrm -rf wordpress latest.tar.gz\r\necho \"[SETUP] Wordpress installed - http:\/\/ip:port\/wp-admin \"\r\nexit 0\r\n##else\r\n##echo \"<?php phpinfo(); ?>\" > \"www\/index.php\"\r\nfi\r\nif [ \"${USER_UPLOAD}\" == \"true\" ] || [ \"${USER_UPLOAD}\" == \"1\" ]; then\r\necho -e \"assuming user knows what they are doing have a good day.\"\r\nexit 0\r\nfi\r\ncd \/mnt\/server\/www\r\napt update\r\napt install -y git\r\n## add git ending if it's not on the address\r\nif [[ ${GIT_ADDRESS} != *.git ]]; then\r\nGIT_ADDRESS=${GIT_ADDRESS}.git\r\nfi\r\n\r\nif [ -z \"${USERNAME}\" ] && [ -z \"${ACCESS_TOKEN}\" ]; then\r\necho -e \"using anon api call\"\r\nelse\r\nGIT_ADDRESS=\"https:\/\/${USERNAME}:${ACCESS_TOKEN}@$(echo -e ${GIT_ADDRESS} | cut -d\/ -f3-)\"\r\nfi\r\n\r\n## pull git js repo\r\nif [ \"$(ls -A \/mnt\/server\/www)\" ]; then\r\necho -e \"\/mnt\/server directory is not empty.\"\r\nif [ -d .git ]; then\r\necho -e \".git directory exists\"\r\nif [ -f .git\/config ]; then\r\necho -e \"loading info from git config\"\r\nORIGIN=$(git config --get remote.origin.url)\r\nelse\r\necho -e \"files found with no git config\"\r\necho -e \"closing out without touching things to not break anything\"\r\nexit 10\r\nfi\r\nfi\r\n\r\nif [ \"${ORIGIN}\" == \"${GIT_ADDRESS}\" ]; then\r\necho \"pulling latest from github\"\r\ngit pull\r\nfi\r\nelse\r\necho -e \"\/mnt\/server is empty.\r\ncloning files into repo\"\r\nif [ -z ${BRANCH} ]; then\r\necho -e \"cloning default branch\"\r\ncd www\/\r\ngit clone ${GIT_ADDRESS} .\r\nelse\r\necho -e \"cloning ${BRANCH}'\"\r\ncd www\/\r\ngit clone --single-branch --branch ${BRANCH} ${GIT_ADDRESS} .\r\nfi\r\nfi\r\necho -e \"[DONE] Everything has been installed\"",
             "container": "debian:bookworm-slim",
             "entrypoint": "bash"
         }
